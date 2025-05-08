@@ -20,18 +20,17 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ usuario: nombreUsuario, contraseña }),
+        body: JSON.stringify({ Nombre_Usuario: nombreUsuario, Contraseña: contraseña }),
       });
 
       const datos = await respuesta.json();
 
-      if (datos) {
+      if (datos.success) {
         console.log("Usuario verificado correctamente");
-        localStorage.setItem("usuario", nombreUsuario);
-        localStorage.setItem("contraseña", contraseña);
+        localStorage.setItem("usuario", nombreUsuario); // Se usa "usuario"
         navegar("/inicio");
       } else {
-        setError("Usuario o contraseña incorrectos");
+        setError(datos.mensaje || "Usuario o contraseña incorrectos");
       }
     } catch (error) {
       setError("Error al conectar con el servidor");
@@ -40,7 +39,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    const usuarioGuardado = localStorage.getItem("usuario");
+    const usuarioGuardado = localStorage.getItem("usuario"); // Se lee "usuario"
     if (usuarioGuardado) {
       navegar("/inicio");
     }

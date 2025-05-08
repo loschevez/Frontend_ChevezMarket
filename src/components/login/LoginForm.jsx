@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "../../app.css";
 
 const LoginForm = ({ email, password, error, setEmail, setPassword, manejarEnvio }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const toggleShowPassword = () => setShowPassword(!showPassword);
+
+  const handleForgotPassword = () => {
+    navigate("/Recuperar-contraseña");
+  };
+
   return (
     <Row className="w-100 justify-content-center">
       <Col md={6} lg={5} xl={4}>
@@ -25,13 +35,23 @@ const LoginForm = ({ email, password, error, setEmail, setPassword, manejarEnvio
               <Form.Group className="mb-3" controlId="contraseñaUsuario">
                 <Form.Label>Contraseña</Form.Label>
                 <Form.Control
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Ingresa tu contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </Form.Group>
+
+              <Button variant="secondary" onClick={toggleShowPassword} className="mb-3">
+                {showPassword ? "Ocultar Contraseña" : "Mostrar Contraseña"}
+              </Button>
+
+              <div className="mb-3">
+                <Button variant="link" onClick={handleForgotPassword}>
+                  ¿Olvidaste tu contraseña?
+                </Button>
+              </div>
 
               <Button variant="primary" type="submit" className="w-100">
                 Iniciar Sesión
