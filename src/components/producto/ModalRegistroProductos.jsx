@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Button, Alert } from "react-bootstrap";
+import { Modal, Form, Button } from "react-bootstrap";
 
 const ModalRegistroProductos = ({
   mostrarModal,
@@ -34,18 +34,13 @@ const ModalRegistroProductos = ({
     };
     fetchTipos();
 
-    console.log("productoActualizar recibido:", productoActualizar); // Depuración
-    console.log("modoActualizar:", modoActualizar); // Depuración
-
     if (modoActualizar && productoActualizar) {
-      const updatedProductoLocal = {
+      setProductoLocal({
         nombre_producto: productoActualizar.nombre_producto || "",
-        Precio_U: productoActualizar.Precio_U ? productoActualizar.Precio_U.toString() : "", // Convertimos a string para el input
-        Cantidad: productoActualizar.Cantidad ? productoActualizar.Cantidad.toString() : "", // Convertimos a string para el input
-        id_tipo: productoActualizar.id_tipo ? productoActualizar.id_tipo.toString() : "", // Convertimos a string para el select
-      };
-      console.log("Producto local actualizado:", updatedProductoLocal); // Depuración
-      setProductoLocal(updatedProductoLocal);
+        Precio_U: productoActualizar.Precio_U || "",
+        Cantidad: productoActualizar.Cantidad || "",
+        id_tipo: productoActualizar.id_tipo || "",
+      });
     } else {
       setProductoLocal({
         nombre_producto: "",
@@ -62,8 +57,17 @@ const ModalRegistroProductos = ({
   };
 
   const handleSubmit = () => {
-    if (!productoLocal.nombre_producto || !productoLocal.Precio_U || !productoLocal.Cantidad || !productoLocal.id_tipo) {
-      alert("Por favor, completa todos los campos obligatorios.");
+    if (
+      !productoLocal.nombre_producto ||
+      !productoLocal.Precio_U ||
+      !productoLocal.Cantidad ||
+      !productoLocal.id_tipo
+    ) {
+      alert("Por favor, completa todos los campos.");
+      return;
+    }
+    if (parseFloat(productoLocal.Precio_U) < 0 || parseFloat(productoLocal.Cantidad) < 0) {
+      alert("El precio y la cantidad no pueden ser negativos.");
       return;
     }
 
@@ -82,91 +86,79 @@ const ModalRegistroProductos = ({
   };
 
   return (
-    <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} size="lg">
-      <Modal.Header closeButton className="bg-primary text-white">
+    <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
+      <Modal.Header closeButton>
         <Modal.Title>{modoActualizar ? "Actualizar Producto" : "Agregar Nuevo Producto"}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-4">
         <Form>
-          <div className="row">
-            <div className="col-md-6">
-              <Form.Group className="mb-4" controlId="formNombreProducto">
-                <Form.Label className="fw-bold">Nombre del Producto</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="nombre_producto"
-                  value={productoLocal.nombre_producto}
-                  onChange={handleInputChange}
-                  placeholder="Ingresa el nombre del producto"
-                  required
-                  className="border-primary"
-                />
-              </Form.Group>
-            </div>
-            <div className="col-md-6">
-              <Form.Group className="mb-4" controlId="formIdTipo">
-                <Form.Label className="fw-bold">Tipo de Producto</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="id_tipo"
-                  value={productoLocal.id_tipo}
-                  onChange={handleInputChange}
-                  required
-                  className="border-primary"
-                >
-                  <option value="">Selecciona un tipo</option>
-                  {errorTipos ? (
-                    <option value="" disabled>{errorTipos}</option>
-                  ) : (
-                    tipos.map((tipo) => (
-                      <option key={tipo.id_tipo} value={tipo.id_tipo}>
-                        {tipo.tipo}
-                      </option>
-                    ))
-                  )}
-                </Form.Control>
-              </Form.Group>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <Form.Group className="mb-4" controlId="formPrecioU">
-                <Form.Label className="fw-bold">Precio Unitario</Form.Label>
-                <Form.Control
-                  type="number"
-                  step="0.01"
-                  name="Precio_U"
-                  value={productoLocal.Precio_U}
-                  onChange={handleInputChange}
-                  placeholder="Ingresa el precio unitario"
-                  required
-                  className="border-primary"
-                />
-              </Form.Group>
-            </div>
-            <div className="col-md-6">
-              <Form.Group className="mb-4" controlId="formCantidad">
-                <Form.Label className="fw-bold">Cantidad</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="Cantidad"
-                  value={productoLocal.Cantidad}
-                  onChange={handleInputChange}
-                  placeholder="Ingresa la cantidad"
-                  required
-                  className="border-primary"
-                />
-              </Form.Group>
-            </div>
-          </div>
-          {errorCarga && <Alert variant="danger" className="mt-3">{errorCarga}</Alert>}
+          <Form.Group className="mb-3" controlId="formNombreProducto">
+            <Form.Label>Nombre del Producto</Form.Label>
+            <Form.Control
+              type="text"
+              name="nombre_producto"
+              value={productoLocal.nombre_producto}
+              onChange={handleInputChange}
+              placeholder="Ingresa el nombre del producto"
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formTipoProducto">
+            <Form.Label>Tipo de Producto</Form.Label>
+            <Form.Control
+              as="select"
+              name="id_tipo"
+              value={productoLocal.id_tipo}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Selecciona un tipo</option>
+              {tipos.map((tipo) => (
+                <option key={tipo.id_tipo} value={tipo.id_tipo}>
+                  {tipo.tipo}
+                </option>
+              ))}
+            </Form.Control>
+            {errorTipos && <div className="text-danger mt-2">{errorTipos}</div>}
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formPrecioUnitario">
+            <Form.Label>Precio Unitario</Form.Label>
+            <Form.Control
+              type="number"
+              name="Precio_U"
+              value={productoLocal.Precio_U}
+              onChange={handleInputChange}
+              placeholder="Ingresa el precio unitario"
+              required
+              min="0"
+              onKeyDown={(e) => {
+                if (e.key === '-') e.preventDefault();
+              }}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formCantidad">
+            <Form.Label>Cantidad</Form.Label>
+            <Form.Control
+              type="number"
+              name="Cantidad"
+              value={productoLocal.Cantidad}
+              onChange={handleInputChange}
+              placeholder="Ingresa la cantidad"
+              required
+              min="0"
+              onKeyDown={(e) => {
+                if (e.key === '-') e.preventDefault();
+              }}
+            />
+          </Form.Group>
+          {errorCarga && <div className="text-danger mt-2">{errorCarga}</div>}
         </Form>
       </Modal.Body>
-      <Modal.Footer className="bg-light">
-        <Button variant="secondary" onClick={() => setMostrarModal(false)} className="px-4">
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setMostrarModal(false)}>
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleSubmit} className="px-4">
+        <Button variant="primary" onClick={handleSubmit}>
           {modoActualizar ? "Guardar Cambios" : "Guardar Producto"}
         </Button>
       </Modal.Footer>

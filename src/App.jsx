@@ -8,13 +8,14 @@ import Tipos from "./views/tipo";
 import Compras from './views/compras';
 import "./App.css";
 import Hanabi from "./Imagenes/Hanabi.jpg";
+import Cielo from "./Imagenes/Cielo.jpg";
 
 const App = () => {
   return (
     <Router>
       <div
         style={{
-          backgroundImage: `url(${Hanabi})`,
+          backgroundImage: `url(${Cielo})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

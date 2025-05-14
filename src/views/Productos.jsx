@@ -37,7 +37,7 @@ const Productos = () => {
     const texto = e.target.value.toLowerCase();
     setTextoBusqueda(texto);
     const filtrados = listaProductos.filter(
-      (producto) => (producto.nombre_producto || "").toLowerCase().includes(texto)
+      (producto) => producto.nombre_producto.toLowerCase().includes(texto)
     );
     setProductosFiltrados(filtrados);
   };
@@ -83,7 +83,7 @@ const Productos = () => {
         throw new Error('Error al obtener el producto');
       }
       const producto = await respuesta.json();
-      setProductoActualizar(producto[0]); // Ajuste para el formato devuelto por obtenerProductoPorId
+      setProductoActualizar(producto);
       setModoActualizar(true);
       setMostrarModal(true);
     } catch (error) {
@@ -101,8 +101,7 @@ const Productos = () => {
         body: JSON.stringify(productoActualizado),
       });
       if (!respuesta.ok) {
-        const errorData = await respuesta.json();
-        throw new Error(errorData.message || 'Error al actualizar el producto');
+        throw new Error('Error al actualizar el producto');
       }
       await obtenerProductos();
       setMostrarModal(false);
@@ -129,7 +128,7 @@ const Productos = () => {
         <Col lg={5} md={8} sm={8} xs={7}>
           <Form.Control
             type="text"
-            placeholder="Buscar por nombre de producto"
+            placeholder="Buscar por nombre"
             value={textoBusqueda}
             onChange={manejarCambioBusqueda}
           />
@@ -141,7 +140,7 @@ const Productos = () => {
         cargando={cargando}
         error={errorCarga}
         eliminarProducto={eliminarProducto}
-        actualizarProducto={actualizarProducto} // Añadido para permitir actualización
+        actualizarProducto={actualizarProducto}
       />
       <ModalRegistroProductos
         mostrarModal={mostrarModal}

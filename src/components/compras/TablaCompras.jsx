@@ -7,13 +7,13 @@ const TablaCompras = ({ compras, cargando, error, eliminarCompra, actualizarComp
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showUpdateAlert, setShowUpdateAlert] = useState(false);
 
-  const handleDeleteConfirm = (compraId) => {
-    setCompraAEliminar(compraId);
+  const handleDeleteConfirm = (compra) => {
+    setCompraAEliminar(compra);
     setShowDeleteModal(true);
   };
 
   const handleDeleteCompra = () => {
-    eliminarCompra(compraAEliminar);
+    eliminarCompra(compraAEliminar.id_compra);
     setShowDeleteModal(false);
     setShowSuccessAlert(true);
     setTimeout(() => setShowSuccessAlert(false), 3000);
@@ -77,7 +77,7 @@ const TablaCompras = ({ compras, cargando, error, eliminarCompra, actualizarComp
                   </tbody>
                 </Table>
                 <div className="d-flex justify-content-end">
-                  <Button variant="danger" onClick={() => handleDeleteConfirm(compra.id_compra)} className="me-2">
+                  <Button variant="danger" onClick={() => handleDeleteConfirm(compra)} className="me-2">
                     <i className="bi bi-trash"></i> Eliminar
                   </Button>
                   <Button variant="primary" onClick={() => handleUpdateCompra(compra.id_compra)}>
@@ -89,12 +89,14 @@ const TablaCompras = ({ compras, cargando, error, eliminarCompra, actualizarComp
           </Col>
         ))}
       </Row>
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Confirmar Eliminación</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          ¿Estás seguro de que deseas eliminar esta compra?
+        <Modal.Body className="p-3">
+          {compraAEliminar && (
+            <p>¿Estás seguro de que deseas eliminar la compra #{compraAEliminar.id_compra} del proveedor {compraAEliminar.nombre_proveedor}?</p>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>

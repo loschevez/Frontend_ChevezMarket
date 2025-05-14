@@ -105,8 +105,8 @@ const ModalRegistroCompra = ({
       return;
     }
     if (compraLocal.detalles.some(detalle => 
-      !detalle.id_producto || !detalle.Cantidad || !detalle.precio_unitario || !detalle.subtotal)) {
-      alert("Por favor, completa todos los campos de los detalles.");
+      !detalle.id_producto || !detalle.Cantidad || parseFloat(detalle.Cantidad) < 0 || !detalle.precio_unitario || !detalle.subtotal)) {
+      alert("Por favor, completa todos los campos de los detalles y asegúrate de que la cantidad sea mayor o igual a cero.");
       return;
     }
 
@@ -118,11 +118,11 @@ const ModalRegistroCompra = ({
   };
 
   return (
-    <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} size="lg">
+    <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title>{modoActualizar ? "Actualizar Compra" : "Agregar Nueva Compra"}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="p-4">
         <Form>
           <Form.Group className="mb-3" controlId="formIdProveedor">
             <Form.Label>Proveedor</Form.Label>
@@ -190,6 +190,12 @@ const ModalRegistroCompra = ({
                       onChange={(e) => handleInputChange(e, index)}
                       placeholder="Cantidad"
                       required
+                      min="0"
+                      onKeyDown={(e) => {
+                        if (e.key === '-') {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </td>
                   <td>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Card, Button } from "react-bootstrap";
-import miFoto from "../Imagenes/miFoto.jpg"; // Ajusta la ruta según tu estructura
+import denim from '../Imagenes/denim.png'; // Ajusta según la ubicación real
 
 const Inicio = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");
@@ -31,7 +31,7 @@ const Inicio = () => {
       style={{ minHeight: "100vh" }}
     >
       <Card style={{ width: "18rem" }}>
-        <Card.Img variant="top" src={miFoto} alt="Imagen de usuario" />
+        <Card.Img variant="top" src={denim} alt="Imagen de usuario" />
         <Card.Body>
           <Card.Title>¡Bienvenido, {nombreUsuario}!</Card.Title>
           <Card.Text>Esperamos que tengas un gran día en Chevez Store.</Card.Text>
